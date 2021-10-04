@@ -133,5 +133,29 @@ login: (req, res) => {
         })
     })
 })
-    }
+    },
+    getAllUsers: (req, res) => {
+        User.find().then((users) => {
+            res.status(200).json({
+                users
+            })
+        }).catch(error => {
+            res.status(500).json({
+                error
+            })
+        });
+    },
+    getUser: (req, res) => {
+        const userId = req.params.userId;
+
+        User.findById(userId).then((user) => {
+            res.status(200).json({
+                user
+            })
+        }).catch(error => {
+            res.status(500).json({
+                error
+            })
+        });
+    },
 }

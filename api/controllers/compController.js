@@ -115,7 +115,7 @@ module.exports = {
                     message: 'Competition not found'
                 })
             }
-        }).then(() => {
+        
             Competition.deleteOne({ _id: competitionId }).then(() => {
                 res.status(200).json({
                     message: `Competition _id:${competitionId} Deleted`

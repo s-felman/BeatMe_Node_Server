@@ -8,7 +8,8 @@ const compSchema = mongoose.Schema({
     details:{ type: String},
     target: {type: String, require: true},
     targetDate: {type: Date, require: true},
-    usersList:[{type: String}]
+    usersList:[{type: String}],
+    image: { type: String }
 });
 
 module.exports = mongoose.model('Competiton', compSchema);

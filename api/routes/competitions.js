@@ -14,9 +14,9 @@ const {
 router.get('/', getAllCompetitions);
 router.get('/:competitionId', getCompetition);
 
-router.post('/', upload.single('image') ,createCompetition);
-router.patch('/:competitionId', checkAuth, updateCompetition);
-router.delete('/:competitionId', checkAuth, deleteCompetition);
+router.post('/', upload.single('image'), createCompetition);
+router.patch('/:competitionId', updateCompetition);
+router.delete('/:competitionId', deleteCompetition);
 
 
 module.exports = router;
