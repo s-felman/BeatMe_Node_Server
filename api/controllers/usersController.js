@@ -53,10 +53,11 @@ module.exports = {
     })
 },
     
-login: (req, res) => {
+login: (req, res) => {   
         const { userName, email, password } = req.body;
 
-        User.find({ email }).then((users) => {
+        User.find( email ? { email } : {userName} ).then((users) => {
+         
             if (users.length === 0) {
                 return res.status(401).json({
                     message: 'Auth failed'
@@ -80,12 +81,12 @@ login: (req, res) => {
                     },
                     process.env.JWT_KEY,
                     {
-                        expiresIn: "3H"
+                       //expiresIn: "3H"
                     });
                     console.log(user)
                     return res.status(200).json({
                         message: 'Auth successful',
-                        token, 
+                        user
                     })
                 }
 
@@ -151,6 +152,43 @@ login: (req, res) => {
         User.findById(userId).then((user) => {
             res.status(200).json({
                 user
+            })
+        }).catch(error => {
+            res.status(500).json({
+                error
+            })
+        });
+    },
+    getByEmail: (req, res) => {
+        const email = req.params.email;
+        User.findOne({ email}).then((user) => {
+
+            if (user=== null) {
+                return res.status(401).json({
+                    message: 'email not  found'
+                });
+            }
+            return res.status(200).json({
+                message: 'email exist'
+            })
+        }).catch(error => {
+            res.status(500).json({
+                error
+            })
+        });
+    },
+    getByUserName: (req, res) => {
+        const userName = req.params.username;
+        console.log(userName)
+        User.findOne({ userName}).then((user) => {
+
+            if (user=== null) {
+                return res.status(401).json({
+                    message: 'uaername not  found'
+                });
+            }
+            return res.status(200).json({
+                message: 'username exist'
             })
         }).catch(error => {
             res.status(500).json({
