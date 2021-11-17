@@ -126,5 +126,19 @@ module.exports = {
                 })
             });
         })
+    },
+    getCompetitionByManager:(req, res) => {
+
+        const managerId = req.params.managerId;
+        Competition.find({adminId: managerId}).then((competition) => {
+            console.log(competition)
+            res.status(200).json({
+                competition
+            })
+        }).catch(error => {
+            res.status(500).json({
+                error
+            })
+        });
     }
 }

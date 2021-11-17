@@ -8,12 +8,13 @@ const {
     createCompetition,
     getCompetition,
     updateCompetition,
-    deleteCompetition
+    deleteCompetition,
+    getCompetitionByManager
 } = require('../controllers/compController');
 
 router.get('/', getAllCompetitions);
 router.get('/:competitionId', getCompetition);
-
+router.get('/getByManager/:managerId', getCompetitionByManager);
 router.post('/', upload.single('image'), createCompetition);
 router.patch('/:competitionId', updateCompetition);
 router.delete('/:competitionId', deleteCompetition);
