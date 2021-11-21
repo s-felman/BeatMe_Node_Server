@@ -9,6 +9,7 @@ const compSchema = mongoose.Schema({
     target: {type: String, require: true},
     targetDate: {type: Date, require: true},
     usersList:[],
+    answersList:{type: Map},
     image: { type: String },
     typeProps:[]
 });
