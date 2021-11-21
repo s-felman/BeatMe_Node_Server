@@ -16,9 +16,10 @@ module.exports = {
         });
     },
     createCompetition: (req, res) => {
-        const { path: image } = req.file;
-        const {compName, adminId,compType, details, target,targetDate, userList } = req.body;
-        
+        console.log("rew",req.body)
+        // const { path: image } = req.file;
+        const {compName, adminId,compType, details, target,targetDate, usersList, typeProps } = req.body.comp;
+        console.log(adminId)
         Admin.findById(adminId).then((admin) => {
             if (!admin) {
                 return res.status(404).json({
@@ -34,19 +35,23 @@ module.exports = {
                 details, 
                 target,
                 targetDate, 
-                userList,
-                image: image.replace('\\','/')
+                usersList,
+                //  image: image.replace('\\','/')
+                typeProps
             });
 
-            return competition.save();
-        }).then(() => {
+            competition.save().then((compe) => {
+            Competition.findById(compe._id).then((compe)=>{
+                const comp=compe;
             res.status(200).json({
-                message: 'Created competition'
+                message: 'Created competition',
+                comp
             })
-        }).catch(error => {
+            }).catch(error => {
             res.status(500).json({
-                error
-            })
+                error }) 
+            }) 
+        })
         });
     },
     getCompetition: (req, res) => {

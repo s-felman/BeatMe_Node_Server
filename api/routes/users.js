@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const upload = require('../middlewares/upload');
 
 const {
     signup,
@@ -11,7 +12,7 @@ const {
     getByUserName
 } = require('../controllers/usersController');
 
-router.post('/signup', signup);
+router.post('/signup',upload.single('image'), signup);
 router.post('/login', login);
 router.patch('/update',update)
 router.get('/',getAllUsers)

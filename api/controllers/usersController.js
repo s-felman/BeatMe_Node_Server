@@ -5,8 +5,9 @@ const User = require('../models/userSchema');
 
 module.exports = {
     signup: (req, res) => {
-        const { firstName, lastName, userName, email, phone, password, getEmails } = req.body;
-
+        // const { path: image } = req.file;
+        const { firstName, lastName, userName, email, phone, password, getEmail } = req.body;
+        
         User.find({ email }).then((users) => {
             if (users.length >= 1) {
                 return res.status(409).json({
@@ -34,7 +35,8 @@ module.exports = {
                         email,
                         phone,
                         password: hash,
-                        getEmails
+                        getEmail,
+                        // image: image.replace('\\','/')
                     })
 
                     user.save().then((result) => {
