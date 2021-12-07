@@ -5,6 +5,7 @@ const checkAuth = require('../middlewares/checkAuth');
 
 const {
     getAllCompetitions,
+    getAllCompetitionsById,
     createCompetition,
     createVotesCompetition,
     getCompetition,
@@ -15,6 +16,7 @@ const {
 } = require('../controllers/compController');
 
 router.get('/', getAllCompetitions);
+router.get('/:userEmail',getAllCompetitionsById);
 router.get('/:competitionId', getCompetition);
 router.get('/getByManager/:managerId', getCompetitionByManager);
 router.post('/getByParticipant', getCompetitionByParticipant)

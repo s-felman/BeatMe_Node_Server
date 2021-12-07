@@ -15,6 +15,23 @@ module.exports = {
             })
         });
     },
+    getAllCompetitionsById: (req, res) => {
+        const email = req.params.userList.email;
+        Competition.find( {email} ).populate('adminId').then((competitions) => {
+            if (competition === null) {
+                return res.status(401).json({
+                    message: 'competition not  found'
+                });
+            }
+            return res.status(200).json({
+                competitions
+            })
+        }).catch(error => {
+            res.status(500).json({
+                error
+            })
+        });
+    },
     createCompetition: (req, res) => {
         console.log(req.body)
         if(req.file !== undefined){
