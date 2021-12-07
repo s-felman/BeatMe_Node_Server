@@ -23,6 +23,6 @@ const upload = multer({
         fileSize: 1024 * 1024 * 2
     },
     fileFilter
-});
+})
 
 module.exports = upload;

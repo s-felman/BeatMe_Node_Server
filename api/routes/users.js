@@ -9,10 +9,10 @@ const {
     getAllUsers,
     getUser,
     getByEmail,
-    getByUserName
+    getByUserName,
 } = require('../controllers/usersController');
 
-router.post('/signup',upload.single('image'), signup);
+router.post('/signup',upload.single("myFile"), signup);
 router.post('/login', login);
 router.patch('/update',update)
 router.get('/',getAllUsers)

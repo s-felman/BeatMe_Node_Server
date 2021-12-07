@@ -36,7 +36,7 @@ module.exports = {
                         phone,
                         password: hash,
                         getEmail,
-                        // image: image.replace('\\','/')
+                        image: image.replace('\\','/')
                     })
 
                     user.save().then((result) => {
@@ -54,6 +54,16 @@ module.exports = {
             })
         })
     },
+    // addimage: (req, res)=>{
+    //     console.log(req)
+    //     console.log(req.files)
+    //     const obj = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
+    //     console.log(obj);
+    //     console.log('req.file', req.file, req.files, req.body)
+        
+    //     // const { path: image } = req.file;
+       
+    // },
 
     login: (req, res) => {
         const { userName, email, password } = req.body;

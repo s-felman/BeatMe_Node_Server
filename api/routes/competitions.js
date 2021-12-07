@@ -6,16 +6,20 @@ const checkAuth = require('../middlewares/checkAuth');
 const {
     getAllCompetitions,
     createCompetition,
+    createVotesCompetition,
     getCompetition,
     updateCompetition,
     deleteCompetition,
-    getCompetitionByManager
+    getCompetitionByManager,
+    getCompetitionByParticipant
 } = require('../controllers/compController');
 
 router.get('/', getAllCompetitions);
 router.get('/:competitionId', getCompetition);
 router.get('/getByManager/:managerId', getCompetitionByManager);
-router.post('/', upload.single('image'), createCompetition);
+router.post('/getByParticipant', getCompetitionByParticipant)
+router.post('/', upload.single("myFile"), createCompetition);
+router.post('/createvotes',upload.single("myFile"), createVotesCompetition);
 router.patch('/:competitionId', updateCompetition);
 router.delete('/:competitionId', deleteCompetition);
 

@@ -16,10 +16,19 @@ module.exports = {
         });
     },
     createCompetition: (req, res) => {
-        console.log("rew",req.body)
-        // const { path: image } = req.file;
-        const {compName, adminId,compType, details, target,targetDate, usersList, typeProps } = req.body.comp;
-        console.log(adminId)
+        console.log(req.body)
+        if(req.file !== undefined){
+            var { path: image } = req.file;}
+        else
+         image ="upload\\1633339585502-(Reka.us)A_Dreamy_World_75th_by_grafixeye.jpg"
+    //     if(req.file!==undefined){
+    //     image = req.file.path;
+    // }
+    //console.log(image)
+        const {compName, adminId,compType, details, target,targetDate } = req.body;
+        const typeProps = JSON.parse(req.body.typeProps)
+        const usersList = JSON.parse(req.body.usersList)
+
         Admin.findById(adminId).then((admin) => {
             if (!admin) {
                 return res.status(404).json({
@@ -36,22 +45,56 @@ module.exports = {
                 target,
                 targetDate, 
                 usersList,
-                //  image: image.replace('\\','/')
+                image: image.replace('\\','/'),
                 typeProps
             });
 
             competition.save().then((compe) => {
             Competition.findById(compe._id).then((compe)=>{
                 const comp=compe;
+                console.log("ךך", comp)
+            return res.status(200).json({
+                // message: 'Created competition',
+                comp
+            })
+            }).catch(error => {
+            return res.status(500).json({
+                error }) 
+            }) 
+        })
+        });
+    },
+    createVotesCompetition: (req, res) => {
+        console.log(req.body,req.file)
+        
+        const { path: image } = req.file;
+        const {compId ,itemName, itemDetails } = req.body;
+
+        Competition.findById(compId).then((comp) => {
+            if (!comp) {
+                return res.status(404).json({
+                    message: 'Competition not found'
+                })
+            }
+
+            const item = {
+                _id: new mongoose.Types.ObjectId(),
+                itemName: itemName,
+                itemDetails: itemDetails,
+                image: image.replace('\\','/'),
+            };
+
+            comp.typeProps=[...typeProps, item]
+
+            Competition.updateOne({_id: compId}, comp).then((compe)=>{
             res.status(200).json({
-                message: 'Created competition',
+                message: 'Competition itemsList updated ',
                 comp
             })
             }).catch(error => {
             res.status(500).json({
                 error }) 
             }) 
-        })
         });
     },
     getCompetition: (req, res) => {
@@ -77,7 +120,7 @@ module.exports = {
                     message: 'Competition not found'
                 })
             }
-        }).then(() => {
+        }).then( () => {
             if (adminId) {
                 return Admin.findById(adminId).then((admin) => {
                     if (!admin) {
@@ -136,7 +179,6 @@ module.exports = {
 
         const managerId = req.params.managerId;
         Competition.find({adminId: managerId}).then((competition) => {
-            console.log(competition)
             res.status(200).json({
                 competition
             })
@@ -145,5 +187,33 @@ module.exports = {
                 error
             })
         });
+    },
+    getCompetitionByParticipant:(req, res) => {
+        console.log(req.body)
+        const participantId = req.body.participantId;
+        const competitionId= req.body.competitionId;
+        const userEmail= req.body.userEmail;
+        Competition.findById(competitionId).then((competition) => {
+            const usersList= competition.usersList;
+            usersList.forEach(i => {
+                if(i.userEmail===userEmail){
+                    Admin.findById(participantId).then((users)=>{
+                        const user=users
+                        user.competitionsList=[...user.competitionsList, competitionId]
+
+                        Admin.updateOne({ _id: participantId },user).then(()=>{
+                             res.status(200).json({
+                            competition
+                            }) 
+                        }) 
+                    })
+            }
+        })           
+        }).catch(error => {
+            res.status(500).json({
+                error
+            })
+        });
     }
-}
+
+    }

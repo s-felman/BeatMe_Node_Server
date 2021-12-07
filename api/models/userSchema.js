@@ -15,6 +15,7 @@ const userSchema = mongoose.Schema({
     password: { type: String, require: true },
     getEmails: Boolean,
     image: { type: String },
+    competitionsList:[{type: mongoose.Schema.Types.ObjectId,  ref: 'Competiton'}]
 });
 
 module.exports = mongoose.model('User', userSchema);
