@@ -33,16 +33,13 @@ module.exports = {
         });
     },
     createCompetition: (req, res) => {
-        console.log(req.body)
+
         if(req.file !== undefined){
             var { path: image } = req.file;}
         else
          image ="upload\\1633339585502-(Reka.us)A_Dreamy_World_75th_by_grafixeye.jpg"
-    //     if(req.file!==undefined){
-    //     image = req.file.path;
-    // }
-    //console.log(image)
-        const {compName, adminId,compType, details, target,targetDate } = req.body;
+
+        const {compName, adminId, compType, details, target, targetDate } = req.body;
         const typeProps = JSON.parse(req.body.typeProps)
         const usersList = JSON.parse(req.body.usersList)
 
@@ -65,11 +62,11 @@ module.exports = {
                 image: image.replace('\\','/'),
                 typeProps
             });
-
+                console.log(competition)
             competition.save().then((compe) => {
             Competition.findById(compe._id).then((compe)=>{
                 const comp=compe;
-                console.log("ךך", comp)
+                console.log("created comp", comp)
             return res.status(200).json({
                 // message: 'Created competition',
                 comp
@@ -82,9 +79,10 @@ module.exports = {
         });
     },
     createVotesCompetition: (req, res) => {
-        console.log(req.body,req.file)
-        
-        const { path: image } = req.file;
+        if (req.file !== undefined){
+            var { path: image } = req.file;}
+        else
+         image ="upload\\"
         const {compId ,itemName, itemDetails } = req.body;
 
         Competition.findById(compId).then((comp) => {
@@ -100,18 +98,21 @@ module.exports = {
                 itemDetails: itemDetails,
                 image: image.replace('\\','/'),
             };
-
-            comp.typeProps=[...typeProps, item]
-
-            Competition.updateOne({_id: compId}, comp).then((compe)=>{
-            res.status(200).json({
-                message: 'Competition itemsList updated ',
-                comp
+            
+            comp.typeProps = [...comp.typeProps, item]
+            return Competition.updateOne({_id: compId}, comp).then(()=>{
+                Competition.findById(compId).then((com)=>{
+                    return res.status(200).json({
+                    message: 'Competition itemsList updated ',
+                    com
+                }) 
             })
-            }).catch(error => {
-            res.status(500).json({
-                error }) 
+            })               
             }) 
+            .catch(error => {
+            return res.status(500).json({
+                error }) 
+           
         });
     },
     getCompetition: (req, res) => {
@@ -128,16 +129,21 @@ module.exports = {
         });
     },
     updateCompetition: (req, res) => {
+        if (req.file !== undefined){
+            var { path: image } = req.file;}
+        else
+         image ="upload\\"
         const competitionId = req.params.competitionId;
         const { adminId } = req.body;
 
         Competition.findById(competitionId).then((competition) => {
+            debugger
             if (!competition) {
                 return res.status(404).json({
                     message: 'Competition not found'
                 })
             }
-        }).then( () => {
+        }).then(() => {
             if (adminId) {
                 return Admin.findById(adminId).then((admin) => {
                     if (!admin) {
@@ -148,28 +154,19 @@ module.exports = {
 
                     return Competition.updateOne({ _id: competitionId }, req.body);
                 }).then(() => {
-                    res.status(200).json({
-                        message: 'Competition Updated'
+                    Competition.findById(competitionId).then((comp)=>{
+                        return res.status(200).json({
+                        message: 'Competition itemsList updated ',
+                        comp
                     })
+                }) 
                 }).catch(error => {
                     res.status(500).json({
                         error
                     })
                 });
             }
-
-            Competition.updateOne({ _id: competitionId }, req.body).then(() => {
-                res.status(200).json({
-                    message: 'Competition Updated'
-                })
-            }).catch(error => {
-                res.status(500).json({
-                    error
-                })
-            });
         })
-
-
     },
     deleteCompetition: (req, res) => {
         const competitionId = req.params.competitionId

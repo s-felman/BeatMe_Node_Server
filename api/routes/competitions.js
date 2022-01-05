@@ -22,7 +22,7 @@ router.get('/getByManager/:managerId', getCompetitionByManager);
 router.post('/getByParticipant', getCompetitionByParticipant)
 router.post('/', upload.single("myFile"), createCompetition);
 router.post('/createvotes',upload.single("myFile"), createVotesCompetition);
-router.patch('/:competitionId', updateCompetition);
+router.patch('/:competitionId',upload.single("myFile"), updateCompetition);
 router.delete('/:competitionId', deleteCompetition);
 
 

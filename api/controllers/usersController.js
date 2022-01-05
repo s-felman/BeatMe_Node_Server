@@ -5,7 +5,10 @@ const User = require('../models/userSchema');
 
 module.exports = {
     signup: (req, res) => {
-        // const { path: image } = req.file;
+        if(req.file !== undefined){
+            var { path: image } = req.file;}
+        else
+         image ="upload\\mici.ico"
         const { firstName, lastName, userName, email, phone, password, getEmail } = req.body;
         
         User.find({ email }).then((users) => {
@@ -54,29 +57,16 @@ module.exports = {
             })
         })
     },
-    // addimage: (req, res)=>{
-    //     console.log(req)
-    //     console.log(req.files)
-    //     const obj = JSON.parse(JSON.stringify(req.body)); // req.body = [Object: null prototype] { title: 'product' }
-    //     console.log(obj);
-    //     console.log('req.file', req.file, req.files, req.body)
-        
-    //     // const { path: image } = req.file;
-       
-    // },
-
     login: (req, res) => {
-        const { userName, email, password } = req.body;
-
-        User.find(email ? { email } : { userName }).then((users) => {
-
-            if (users.length === 0) {
+        const { userName, password } = req.body;
+            console.log(req.body)
+        User.findOne( {userName}).then((user) => {
+            console.log(user)
+            if (user.length === 0) {
                 return res.status(401).json({
                     message: 'Auth failed'
                 });
             }
-
-            const [user] = users;
 
             bcrypt.compare(password, user.password, (error, result) => {
                 if (error) {
@@ -89,13 +79,13 @@ module.exports = {
                     const token = jwt.sign({
                         id: user._id,
                         userName: user.userName,
-                        email: user.email
+                        // email: user.email
                     },
                         process.env.JWT_KEY,
                         {
                             //expiresIn: "3H"
                         });
-                    console.log(user)
+                    console.log("user inside",user)
                     return res.status(200).json({
                         message: 'Auth successful',
                         user

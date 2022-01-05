@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const compSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    compName:{type: String, require: true, unique: true},
+    compName:{type: String, require: true},
     adminId:{ type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User'},
     compType: {type: String, require: true},
     details:{ type: String},
