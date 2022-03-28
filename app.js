@@ -11,8 +11,9 @@ var app = express();
 var indexRouter = require('./api/routes/index');
 var usersRouter = require('./api/routes/users');
 var competitionsRouter = require('./api/routes/competitions');
+var participantRouter = require('./api/routes/participant');
 
-mongoose.connect(`mongodb://localhost:27017/BeatMeDB`, {
+mongoose.connect(`mongodb://127.0.0.1:27017/BeatMeDB`, {
     // useUnifiedTopology: true,
     // useCreateIndex: true
 });
@@ -27,7 +28,7 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use('/upload',express.static('upload'))
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -45,7 +46,7 @@ app.use((req, res, next) => {
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/competitions', competitionsRouter);
-
+app.use('/participant', participantRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -2,15 +2,17 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userSchema');
+const Participant = require('../models/participantSchema');
+const Competition = require('../models/competitionSchema');
 
 module.exports = {
     signup: (req, res) => {
         if(req.file !== undefined){
             var { path: image } = req.file;}
         else
-         image ="upload\\mici.ico"
-        const { firstName, lastName, userName, email, phone, password, getEmail } = req.body;
-        
+         image ="upload\\static\\user.png"
+        const { firstName, lastName, userName, email, phone, password } = req.body;
+        const getEmail = false;
         User.find({ email }).then((users) => {
             if (users.length >= 1) {
                 return res.status(409).json({
@@ -43,11 +45,13 @@ module.exports = {
                     })
 
                     user.save().then((result) => {
-                        console.log(result);
+                        User.findById(result._id).then((user) => {
+                            return res.status(200).json({
+                                message: 'User created',
+                                user
+                            });
+                        })
 
-                        res.status(200).json({
-                            message: 'User created'
-                        });
                     }).catch(error => {
                         res.status(500).json({
                             error
@@ -59,9 +63,8 @@ module.exports = {
     },
     login: (req, res) => {
         const { userName, password } = req.body;
-            console.log(req.body)
-        User.findOne( {userName}).then((user) => {
-            console.log(user)
+        User.findOne({ userName }).then((user) => {
+            if(user){
             if (user.length === 0) {
                 return res.status(401).json({
                     message: 'Auth failed'
@@ -85,27 +88,24 @@ module.exports = {
                         {
                             //expiresIn: "3H"
                         });
-                    console.log("user inside",user)
                     return res.status(200).json({
                         message: 'Auth successful',
                         user
                     })
                 }
-
+            
                 res.status(401).json({
                     message: 'Auth failed'
                 });
-            })
+            })}
         })
     },
     update: (req, res) => {
         //check when the user want to change the email and validate it
         const oldEmail = req.body.oldEmail;
-        console.log(req.body)
         const { _id, firstName, lastName, userName, email, phone, password, getEmails } = req.body;
 
         User.findOne({ oldEmail }).then((users) => {
-            console.log("u", users)
             if (!users) {
                 return res.status(404).json({
                     message: 'User not found'
@@ -196,5 +196,42 @@ module.exports = {
                 error
             })
         });
+    },
+    registerToComp: (req, res) => {
+        const { id, compId } = req.body;
+
+        User.findOne({ _id: id }).then((user) => {
+            if (!user) {
+                return res.status(404).json({
+                    message: 'User not found'
+                })
+            }
+            user.competitionsList = [...user.competitionsList, compId]
+            Competition.findById(compId).then((comp) => {
+
+                const participant = new Participant({
+                    _id: new mongoose.Types.ObjectId(),
+                    userId: id,
+                    competitionId: compId,
+                    score: 0,
+                    typeProps: comp.typeProps
+                })
+
+                participant.save().then(() => {
+                    User.updateOne({ _id: id }, user).then(() => {
+                        res.status(200).json({
+                            message: 'User Registered',
+                            user
+                        })
+                    })
+                })
+
+            })
+                .catch(error => {
+                    res.status(500).json({
+                        error
+                    })
+                });
+        })
     },
 }

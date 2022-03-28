@@ -11,7 +11,8 @@ const compSchema = mongoose.Schema({
     usersList:[],
     answersList:{type: Map},
     image: { type: String },
-    typeProps:[]
+    typeProps:[],
+    winner: { type: mongoose.Schema.Types.ObjectId, ref: 'User'}
 });
 
 module.exports = mongoose.model('Competiton', compSchema);
